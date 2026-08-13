@@ -1,0 +1,17 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Secrets — never commit, never in the vault
+.env
+
+# Runtime data (SQLite logs)
+data/
+*.db
+*.db-journal
+
+# OS
+.DS_Store

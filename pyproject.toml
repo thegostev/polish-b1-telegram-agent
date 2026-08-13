@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "babciobot"
+version = "0.0.1"
+description = "Telegram bot coaching toward a Polish B1 certificate — LLM client layer (FYR-187)"
+requires-python = ">=3.12"
+dependencies = [
+    "openai>=1.50",
+    "pydantic>=2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools]
+packages = ["babciobot", "babciobot.llm"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "live: marks tests that hit the real Ollama Cloud API (deselect with -m 'not live')",
+]

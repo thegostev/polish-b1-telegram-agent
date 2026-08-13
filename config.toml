@@ -1,0 +1,27 @@
+# babciobot config — every changeable knob lives here, never in code (FYR-187).
+# Swap the base URL or any model with a one-line edit; no code change needed.
+
+[llm]
+# OpenAI-compatible endpoint. Ollama Cloud default (verified by curl in FYR-187 step 0).
+base_url = "https://ollama.com/v1"
+timeout_seconds = 60
+# One retry policy — covers both transport failures and JSON-validation failures.
+max_retries = 1
+retry_backoff_seconds = 1.0
+
+[secrets]
+# .env holding OLLAMA_API_KEY — outside the repo/vault (chmod 600). Loaded only if
+# OLLAMA_API_KEY is not already in the environment.
+env_path = "~/Projects/babciobot/.env"
+
+[storage]
+# SQLite llm_calls log. Relative paths resolve against the repo root.
+db_path = "data/babciobot.db"
+
+[models]
+# Per-job model choice — the correctness escape hatch. T-08 re-benchmarks these.
+# Ids verified against the live /v1/models endpoint (FYR-187 step 0). The T-04 website
+# tags like "glm-5.2:cloud" do NOT resolve on the OpenAI-compatible endpoint; use the ids
+# /v1/models actually returns.
+correction = "deepseek-v4-flash:preview"  # efficient flash variant; good latency for per-message fixes
+grading    = "glm-5.2"                    # strongest model; T-08 may swap either
