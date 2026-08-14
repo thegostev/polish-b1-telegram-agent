@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import os
 from pathlib import Path
 
@@ -94,3 +95,25 @@ def test_get_api_key_missing_raises(tmp_config, monkeypatch):
     # The fixture's env_path (tmp_path / ".env") does not exist, so nothing loads.
     with pytest.raises(ConfigError, match="not set"):
         get_api_key(tmp_config)
+
+def test_model_for_falls_back_to_default(tmp_config):
+    """An unnamed job uses the [models] default when one is configured."""
+    cfg = dataclasses.replace(
+        tmp_config, models={"default": "fallback-model", "correction": "fake-model"}
+    )
+    assert cfg.model_for("correction") == "fake-model"
+    assert cfg.model_for("essay-grading") == "fallback-model"
+
+
+def test_model_for_default_not_listed_as_job(tmp_config):
+    """With no default set, the error lists real jobs and never the `default` key."""
+    with pytest.raises(ConfigError) as exc:
+        tmp_config.model_for("essay-grading")
+    known = str(exc.value).split("Known jobs:")[1]
+    assert "correction" in known and "default" not in known
+
+
+def test_real_config_has_a_default(tmp_config):
+    """config.toml ships a default so a new job never hard-fails on first use."""
+    cfg = load_config(REPO_CONFIG, load_secrets=False)
+    assert cfg.models.get("default")

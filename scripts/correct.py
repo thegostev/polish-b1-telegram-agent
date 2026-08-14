@@ -7,7 +7,7 @@ logs the call to the ``llm_calls`` SQLite log.
 Examples:
     .venv/bin/python scripts/correct.py "Ja jest w domu"
     echo "Ja jest w domu" | .venv/bin/python scripts/correct.py --stdin
-    .venv/bin/python scripts/correct.py "Ja jest w domu" --model glm-5.2:cloud
+    .venv/bin/python scripts/correct.py "Ja jest w domu" --model glm-5.2
 """
 
 from __future__ import annotations

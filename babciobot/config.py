@@ -53,15 +53,20 @@ class Config:
     models: dict[str, str] = field(default_factory=dict)
 
     def model_for(self, job: str) -> str:
-        """Return the configured model id for a job, or raise ConfigError."""
-        try:
-            return self.models[job]
-        except KeyError as exc:
-            known = ", ".join(sorted(self.models)) or "(none configured)"
-            raise ConfigError(
-                f"No model configured for job {job!r}. "
-                f"Add a [models] line in config.toml. Known jobs: {known}."
-            ) from exc
+        """Return the configured model id for a job.
+
+        Falls back to the ``default`` entry in ``[models]`` when the job has no
+        explicit model, so a new job works before it is named in config. Raises
+        ``ConfigError`` when neither the job nor a default is configured.
+        """
+        model = self.models.get(job) or self.models.get("default")
+        if model:
+            return model
+        known = ", ".join(sorted(k for k in self.models if k != "default")) or "(none configured)"
+        raise ConfigError(
+            f"No model configured for job {job!r} and no [models] default set. "
+            f"Add a [models] line in config.toml. Known jobs: {known}."
+        )
 
 
 def _load_dotenv(path: Path, *, overwrite: bool = False) -> None:
