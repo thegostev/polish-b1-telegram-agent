@@ -23,5 +23,7 @@ db_path = "data/babciobot.db"
 # Ids verified against the live /v1/models endpoint (FYR-187 step 0). The T-04 website
 # tags like "glm-5.2:cloud" do NOT resolve on the OpenAI-compatible endpoint; use the ids
 # /v1/models actually returns.
+# `default` is the fallback for any job with no explicit entry below.
+default    = "deepseek-v4-flash:preview"
 correction = "deepseek-v4-flash:preview"  # efficient flash variant; good latency for per-message fixes
-grading    = "glm-5.2"                    # strongest model; T-08 may swap either
+grading    = "deepseek-v4-flash:preview"  # set by Alex 13 Aug; T-08 (FYR-172) re-benchmarks and may swap
